@@ -7,9 +7,8 @@ go get github.com/flowup/exponea-go
 
 ### Usage
 There are two types of requests available on the Exponea API: **Events**
-and **Customers**. While **Events** are for tracking time events, **Customers**
+and **Customers**. While **Events** are for tracking what happened in the real time, **Customers**
 customizes attributes for the given set of customer ids.
-
 
 At first, initialization of the API client is needed.
 ```go
@@ -35,7 +34,7 @@ resp, err := client.SendEvent(&exponea.Event{
 ```
 
 #### Customizing Customer values
-Customizing of customer's attributes can be done by simply calling `SendCustomer` method.
+Customization customer's attributes can be done by simply calling `SendCustomer` method.
 
 ```go
 resp, err := client.SendCustomer(&exponea.Customer{
