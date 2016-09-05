@@ -12,7 +12,7 @@ customizes attributes for the given set of customer ids.
 
 At first, initialization of the API client is needed.
 ```go
-client := exponea.NewClient("your-project-id")
+api := exponea.NewAPI("your-project-id")
 ```
 
 > Please note that any call to the API will return the response with occured
@@ -22,7 +22,7 @@ errors (string array) and error which may be caused by the network or serializer
 Tracking events is done by calling the `SendEvent` method on the `exponea.Client`.
 
 ```go
-resp, err := client.SendEvent(&exponea.Event{
+resp, err := api.Track(&exponea.Event{
   Customers: map[string]string{
     "registered": "peter.malina@flowup.eu",
   },
@@ -37,7 +37,7 @@ resp, err := client.SendEvent(&exponea.Event{
 Customization customer's attributes can be done by simply calling `SendCustomer` method.
 
 ```go
-resp, err := client.SendCustomer(&exponea.Customer{
+resp, err := api.Update(&exponea.Customer{
   Customers: map[string]string{
     "registered": "peter.malina@flowup.eu",
   },

@@ -38,20 +38,25 @@ type Response struct {
 
 // Client implements single project binding to
 // exponea API
-type Client struct {
+type API struct {
   // id of the project
-  project string
+  projectID     string
+
+  projectSecret string
 }
 
-// NewClient creates new Client configuration based on the
+// NewAPI creates new Client configuration based on the
 // given project ID
-func NewClient(projectID string) *Client {
-  return &Client{project: projectID}
+func NewAPI(projectID, projectSecret string) *API {
+  return &API{
+    projectID: projectID,
+    projectSecret: projectSecret,
+  }
 }
 
 // SendRequest sends request to the given endpoint, marshalling
 // the model to JSON and awaiting response of type Response
-func (c *Client) SendRequest(url string, model interface{}) (*Response, error) {
+func (c *API) SendRequest(url string, model interface{}) (*Response, error) {
   requestData, err := json.Marshal(model)
   if err != nil {
     return nil, err
@@ -79,9 +84,9 @@ func (c *Client) SendRequest(url string, model interface{}) (*Response, error) {
 // and returns the server response. In case any errors were
 // caused by the network or data serialization, an error will
 // be returned
-func (c *Client) SendEvent(event *Event) (*Response, error) {
+func (c *API) Track(event *Event) (*Response, error) {
   if event.ProjectID == "" {
-    event.ProjectID = c.project
+    event.ProjectID = c.projectID
   }
 
   return c.SendRequest(EventsEndpoint, event)
@@ -89,9 +94,9 @@ func (c *Client) SendEvent(event *Event) (*Response, error) {
 
 // SendCustomer sends given event data to the Customers endpoint
 // @see SendEvent
-func (c *Client) SendCustomer(customer *Customer) (*Response, error) {
+func (c *API) Update(customer *Customer) (*Response, error) {
   if customer.ProjectID == "" {
-    customer.ProjectID = c.project
+    customer.ProjectID = c.projectID
   }
 
   return c.SendRequest(CustomersEndpoint, customer)
