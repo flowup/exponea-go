@@ -18,22 +18,18 @@ type APISuite struct {
   suite.Suite
 
   server *httptest.Server
-  api *API
-}
-
-type MockBackend struct {}
-
-func (backend *MockBackend) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-  successData, _ := json.Marshal(&Response{})
-  w.Write(successData)
+  api    *API
 }
 
 func (s *APISuite) SetupSuite() {
   // create mock server
-  s.server = httptest.NewServer(&MockBackend{})
+  s.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    successData, _ := json.Marshal(&Response{})
+    w.Write(successData)
+  }))
 
   // create new API
-  s.api = NewAPI(mockClientProjectID, mockClientProjectSecret)
+  s.api = NewAPIWithTarget(mockClientProjectID, mockClientProjectSecret, s.server.URL)
   assert.NotEqual(s.T(), nil, s.api)
   assert.Equal(s.T(), mockClientProjectID, s.api.projectID)
   assert.Equal(s.T(), mockClientProjectSecret, s.api.projectSecret)

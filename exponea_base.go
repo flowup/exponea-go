@@ -8,9 +8,9 @@ import (
 )
 
 const (
-  APIEndpoint = "https://api.exponea.com"
-  EventsEndpoint = APIEndpoint + "/crm/events"
-  CustomersEndpoint = APIEndpoint + "/crm/customers"
+  DefaultAPIEndpoint = "https://api.exponea.com"
+  EventsEndpoint = "/crm/events"
+  CustomersEndpoint = "/crm/customers"
 )
 
 // Event is an encapsulation for event sending request
@@ -43,14 +43,28 @@ type API struct {
   projectID     string
 
   projectSecret string
+
+  // target API URL
+  target string
+
+  httpClient *http.Client
 }
 
 // NewAPI creates new Client configuration based on the
 // given project ID
 func NewAPI(projectID, projectSecret string) *API {
+  return NewAPIWithTarget(projectID, projectSecret, DefaultAPIEndpoint)
+}
+
+// NewAPIWithTarget creates new API client and let's user configure
+// target endpoint. This can be used in case of testing or using more
+// Exponea api targets
+func NewAPIWithTarget(projectID, projectSecret, target string) *API {
   return &API{
     projectID: projectID,
     projectSecret: projectSecret,
+    target: target,
+    httpClient: &http.Client{},
   }
 }
 
@@ -62,7 +76,7 @@ func (c *API) SendRequest(url string, model interface{}) (*Response, error) {
     return nil, err
   }
 
-  resp, err := http.Post(url, "application/json", bytes.NewReader(requestData))
+  resp, err := c.httpClient.Post(c.target + url, "application/json", bytes.NewReader(requestData))
   if err != nil {
     return nil, err
   }
