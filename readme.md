@@ -12,7 +12,7 @@ customizes attributes for the given set of customer ids.
 
 At first, initialization of the API client is needed.
 ```go
-api := exponea.NewAPI("your-project-id")
+api := exponea.NewAPI("your-project-id", "your-project-secret")
 ```
 
 > Please note that any call to the API will return the response with occured
