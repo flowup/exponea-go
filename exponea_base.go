@@ -19,7 +19,7 @@ type Event struct {
   ProjectID  string `json:"project_id"`
   Type       string `json:"type"`
   Properties map[string]string `json:"properties"`
-  Timestamp  int `json:"timestamp"`
+  Timestamp  int `json:"timestamp,omitempty"`
 }
 
 // Customer is an encapsulation for customer value updating
